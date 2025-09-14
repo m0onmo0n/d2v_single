@@ -118,6 +118,7 @@ Double-click run.bat (repo root). It:
 
 
 ### index.html
+* Added "Demo expired" to response list
 * Added batch process form
 * Rearranged previous jobs list
   * Added timestamp and suspects name
@@ -146,3 +147,4 @@ Double-click run.bat (repo root). It:
 
 ### demo_downloader.py
 * Rearranged API endpoints for load balancing
+* Fixed "Demo expired" detection
