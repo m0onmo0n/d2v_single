@@ -8,8 +8,8 @@ import re
 # This module handles downloading and extracting CS2 demos from share codes.
 
 API_URLS = [
-    "https://scapi.csreplay.xyz/decode",
     "https://csreplay.fi/decode",
+    "https://scapi.csreplay.xyz/decode",
     "https://csreplay.moon-moon.tech/decode",
     "https://csreplay2.moon-moon.tech/decode"
 ]
@@ -71,11 +71,6 @@ def download_demo(share_code_or_url, download_folder):
                 api_response_data = response.json()
                 download_url = api_response_data.get("downloadLink")
 
-                #logging.info(f"API response: {api_response_data}")
-
-                if "expired" in response.text.lower():
-                    raise DemoExpiredException("API response indicates the demo has expired.")
-
                 if download_url:
                     logging.info("Successfully retrieved download link.")
                     break
@@ -87,6 +82,9 @@ def download_demo(share_code_or_url, download_folder):
                 continue
         
         if not download_url:
+            if "expired" in response.text.lower() or "bad gateway" in response.text.lower():
+                raise DemoExpiredException("API response indicates the demo has expired.")
+            # logging.info(f"API response: {api_response_data} - RESP: {response} - RESPTXT: {response.text}")
             logging.error("Failed to get a download URL from all available APIs.")
             return None
 

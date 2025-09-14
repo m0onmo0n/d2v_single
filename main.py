@@ -57,7 +57,6 @@ def extract_demo_name_from_url(demo_url_or_code):
         return demo_url_or_code
 
 def getSteamname(suspect_steam_id):
-    # Get name for S64ID from cswatch API
     cswresp = requests.get(f'https://cswatch.in/api/players/{suspect_steam_id}')
     cswdata = cswresp.json()
 
@@ -74,7 +73,6 @@ def getSteamname(suspect_steam_id):
     else:
         steamname_unesc = "No username available"
 
-    # YouTube doesn't like some characters
     ret_steamname = steamname_unesc.translate(str.maketrans({
         "<": "-",
         ">": "-",
@@ -92,13 +90,12 @@ def getSteamname(suspect_steam_id):
 def rename_video_with_suspect_info(source_file, steam64_id, demo_name):
     """Rename video file in place with suspect and demo information."""
     try:
-        # Added timestamp
         gmt = time.gmtime()
         ts_for_name = calendar.timegm(gmt)
         steamname = getSteamname(steam64_id)
 
         source_dir = os.path.dirname(source_file)
-        base_name = f"{steamname} - {steam64_id} - Highlights - {ts_for_name}" # Changed Youtube upload title 
+        base_name = f"{steamname} - {steam64_id} - Highlights - {ts_for_name}"
 
         new_filename = f"{base_name}.mp4"
         new_path = os.path.join(source_dir, new_filename)
@@ -154,6 +151,7 @@ def processing_worker():
             
             update_status("Processing", "Starting new job...", suspect_steam_id)
 
+            demo_is_expired = False
             workflow_successful = False
             youtube_link = None
             task_status = None
@@ -193,7 +191,7 @@ def processing_worker():
                 if not csdm_cli_handler.start_highlights(csdm_project_path, demo_path, suspect_steam_id):
                     raise RuntimeError("Failed to launch highlights.")
 
-                logging.info("Waiting 15 seconds for CS2 to load...")
+                logging.info("Waiting 20 seconds for CS2 to load...")
                 time.sleep(15)
                 
                 update_status("Recording", "Starting OBS recording...", suspect_steam_id)
@@ -208,8 +206,9 @@ def processing_worker():
 
             except DemoExpiredException as e:
                 logging.warning(f"Prep stage failed for {suspect_steam_id}: {e}")
-                update_status("Error", "Demo Expired", suspect_steam_id, "prep_status")
+                update_status("Error", "Demo Expired", suspect_steam_id)
                 ts = time.time()
+                steamname = getSteamname(suspect_steam_id)
                 completed_jobs.append({
                     "timestamp": datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S'),
                     "suspect_steam_id": suspect_steam_id,
@@ -221,6 +220,7 @@ def processing_worker():
                     "submitted_by": job.get('submitted_by', 'N/A'),
                     "suspect_steam_name": steamname
                 })
+                demo_is_expired = True
                 save_results()
 
             except Exception as e:
@@ -295,20 +295,20 @@ def processing_worker():
                     logging.warning("Workflow did not complete successfully. Skipping upload/save.")
                     task_status = "Processing Failed"
 
-
-                ts = time.time()
-                completed_jobs.append({
-                    "timestamp": datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S'),
-                    "suspect_steam_id": suspect_steam_id,
-                    "share_code": job['share_code'],
-                    "youtube_link": youtube_link or "Processing Failed",
-                    "task_status": task_status or "Processing Failed",
-                    "final_video_path": final_video_path,
-                    "youtube_upload": youtube_upload or "N/A",
-                    "submitted_by": job.get('submitted_by', 'N/A'),
-                    "suspect_steam_name": steamname
-                })
-                save_results()
+                if not demo_is_expired:
+                    ts = time.time()
+                    completed_jobs.append({
+                        "timestamp": datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S'),
+                        "suspect_steam_id": suspect_steam_id,
+                        "share_code": job['share_code'],
+                        "youtube_link": youtube_link or "Processing Failed",
+                        "task_status": task_status or "Processing Failed",
+                        "final_video_path": final_video_path,
+                        "youtube_upload": youtube_upload or "N/A",
+                        "submitted_by": job.get('submitted_by', 'N/A'),
+                        "suspect_steam_name": steamname
+                    })
+                    save_results()
 
             demo_queue.task_done()
             time.sleep(5)
