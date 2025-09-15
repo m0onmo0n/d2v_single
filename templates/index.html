@@ -227,7 +227,11 @@ SuspectID,Sharecode,<local/yt>,[submitter]"></textarea>
                 } else {
                     data.queue.forEach(job => {
                         const li = document.createElement('li');
-                        li.textContent = `Suspect: ${job.suspect_steam_id} (Code: ${job.share_code.substring(0, 20)}...)`;
+                        jobytupload = "Save locally";
+                        if( job.youtube_upload ){
+                            jobytupload = "Upload to YouTube"
+                        }
+                        li.textContent = `Suspect: ...${job.suspect_steam_id.substring(job.suspect_steam_id.length - 10)} (Code: ...-${job.share_code.substring(job.share_code.length - 11)}), ${jobytupload}`;
                         queueList.appendChild(li);
                     });
                 }
