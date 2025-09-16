@@ -29,3 +29,9 @@ video_generate_only = true
 # Set a password to protect the web interface.
 # Anyone accessing http://your-ip:5001 will need this password.
 password = your_secret_password
+
+[Submitter]
+# Set your numeric ID and your prefered name under to replace the number with name in results list
+# and to make the name default fot manually inputted demos
+replace_submitter_id = 538676037559517205
+use_submitter_name = OeschMe
