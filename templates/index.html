@@ -156,12 +156,17 @@ SuspectID,Sharecode,<local/yt>,[submitter]"></textarea>
         function submitBatch(){
             var batchcontent = $("#batchprocessorinput").val(); // Get the batch
             var batcharray_raw = batchcontent.split("\n"); // Split to array
+            var submitter_conf_name = $("#submitted_by").val();
             //console.log(batcharray_raw);
             var batcharray = [];
             $.each(batcharray_raw, function(index, value){
                 var temp_array = value.split(","); // Split to subarray
                 if(temp_array.length == 3){ // Add submitter if missing
-                    temp_array.push("Anonymous");
+                    if(submitter_conf_name == "" || submitter_conf_name == undefined){
+                        temp_array.push("Anonymous");
+                    }else{
+                        temp_array.push(submitter_conf_name);
+                    }
                 }
 
                 temp_array = $.map(temp_array, function(value){ // remove whitespaces
@@ -343,8 +348,8 @@ SuspectID,Sharecode,<local/yt>,[submitter]"></textarea>
 
                 if (result.success) {
                     this.reset(); // Clear the form
-                    $("#submitted_by").val("");
                     checkDefaultMethod();
+                    readConfigForSubmitter();
                 }
             } catch (error) {
                 formMessage.textContent = 'An error occurred while submitting the form.';
@@ -539,20 +544,40 @@ SuspectID,Sharecode,<local/yt>,[submitter]"></textarea>
         updateStatus();
 
         function checkDefaultMethod(){
-            var defaultChecked = $.cookie('defaultChecked')
+            var defaultChecked = $.cookie('defaultChecked');
             if(defaultChecked == null){
                 $.cookie('defaultChecked','local', {expires: cookieExpire});
                 defaultChecked = "local";
             }
             if (defaultChecked == "local") {
                 $("#savemethod_youtube").prop('checked', false);
-                $("#savemethod_local").prop('checked', true)
+                $("#savemethod_local").prop('checked', true);
             }else{
                 $("#savemethod_youtube").prop('checked', true);
                 $("#savemethod_local").prop('checked', false);
             }
         }
         checkDefaultMethod();
+
+
+        async function readConfigForSubmitter(){
+            try {
+                const response = await fetch('/read_submitter');
+                const data = await response.json();
+                console.log(data);
+                smitter_name = data['name'];
+                smitter_id = data['id'];
+                $.cookie('smitter_name',smitter_name, {expires: cookieExpire});
+                $.cookie('smitter_id',smitter_id, {expires: cookieExpire});
+            }
+            catch (error) {
+                console.error('Failed to fetch submitter:', error);
+            }
+            $("#submitted_by").val(smitter_name);
+        }
+
+        readConfigForSubmitter();
+
     </script>
 </body>
 </html>

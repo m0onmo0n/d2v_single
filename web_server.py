@@ -15,20 +15,12 @@ def load_config():
     config = configparser.ConfigParser()
     if os.path.exists('config.ini'):
         config.read('config.ini')
-        video_generate_only_conf = config.get('Video','video_generate_only')
-        # Use password from config as base for secret key, or generate one
-        if config.has_option('Web', 'password'):
-            password = config.get('Web', 'password')
-            # Create a secret key based on the password
-            app.secret_key = f"demo2video_{password}_{secrets.token_hex(16)}"
-        else:
-            # Generate a random secret key
-            app.secret_key = secrets.token_hex(32)
+        app.secret_key = secrets.token_hex(32)
+        logging.info("Loaded variables from config.ini")
     else:
         # Fallback secret key
         app.secret_key = secrets.token_hex(32)
         logging.error("No access to ini")
-        video_generate_only_conf = True
 
 load_config()
 
@@ -78,6 +70,20 @@ def index():
     # No login check is needed.
     return render_template("index.html")
 
+@app.route('/read_submitter')
+def read_submitter_from_config():
+    smitter_id = "";
+    smitter_name = "";
+    config = configparser.ConfigParser()
+    if os.path.exists('config.ini'):
+        config.read('config.ini')
+        if config.has_option('Submitter', 'replace_submitter_id'):
+            smitter_id = config.get('Submitter','replace_submitter_id')
+        if config.has_option('Submitter', 'use_submitter_name'):
+            smitter_name = config.get('Submitter','use_submitter_name')
+
+    return jsonify({"name": smitter_name, "id": smitter_id})
+
 @app.route('/add_demo', methods=['POST'])
 def add_demo():
     # No login check is needed.
@@ -86,9 +92,23 @@ def add_demo():
     submitted_by = request.form.get('submitted_by')
     youtube_upload = request.form.get('youtube_upload').lower() in ['True','true']
 
-    # Personal QoL code
-    # if(submitted_by == "538676037559517205" or submitted_by == 538676037559517205):
-    #    submitted_by = "OeschMe"
+    config = configparser.ConfigParser()
+    if os.path.exists('config.ini'):
+        config.read('config.ini')
+        video_generate_only_conf = config.get('Video','video_generate_only')
+        if config.has_option('Submitter', 'replace_submitter_id'):
+            smitter_id = config.get('Submitter','replace_submitter_id')
+        if config.has_option('Submitter', 'use_submitter_name'):
+            smitter_name = config.get('Submitter','use_submitter_name')
+
+    if(youtube_upload == ""):
+        if(video_generate_only_conf != True):
+            youtube_upload = True
+        else:
+            youtube_upload = False
+    
+    if(submitted_by == smitter_id):
+        submitted_by = smitter_name
 
     if not all([share_code, suspect_steam_id, submitted_by]):
         return jsonify({"success": False, "message": "All fields are required."}), 400
@@ -111,10 +131,16 @@ def run_hyperlink():
     if os.path.exists('config.ini'):
         config.read('config.ini')
         video_generate_only_conf = config.get('Video','video_generate_only')
+        if config.has_option('Submitter', 'replace_submitter_id'):
+            smitter_id = config.get('Submitter','replace_submitter_id')
+        if config.has_option('Submitter', 'use_submitter_name'):
+            smitter_name = config.get('Submitter','use_submitter_name')
+
     demo = request.args.get('demo')
     steam64 = request.args.get('steam64')
     name = request.args.get('name')
     youtube_upload = request.args.get('youtube_upload', '')
+
     if(youtube_upload == ""):
         if(video_generate_only_conf != True):
             youtube_upload = True
@@ -122,9 +148,8 @@ def run_hyperlink():
             youtube_upload = False
 
 
-    # Personal QoL code
-    # if(submitted_by == "538676037559517205" or submitted_by == 538676037559517205):
-    #    submitted_by = "OeschMe
+    if(name == smitter_id):
+        name = smitter_name
     
     if not all([demo, steam64, name]):
         missing_params = []

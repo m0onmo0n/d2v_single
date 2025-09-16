@@ -465,3 +465,9 @@ a.open-bform:hover{
     color: #f1f1f1;
     background-color: #333;
 }
+
+#queue-list{
+    overflow: auto;
+    max-height: 300px;
+    scrollbar-color: #333 #121212;
+}
