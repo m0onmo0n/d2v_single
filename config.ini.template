@@ -22,7 +22,8 @@ port = 4455
 [Video]
 # Video Generate Only mode - when enabled, videos are saved locally instead of uploaded to YouTube
 # Set to true to enable local video saving by default, false to upload to YouTube by default
-# This can be overridden per-job using the youtube_upload URL parameter
+# This can be overridden per-job using the youtube_upload URL parameter or the selection in the manual submit form
+# It can also be overriden pre-job in the batch form
 video_generate_only = true
 
 [Web]
@@ -36,6 +37,6 @@ password = your_secret_password
 # Examples: 
 # replace_submitter_id = 538676037559517205
 # use_submitter_name = OeschMe
-# 
+
 replace_submitter_id = 
 use_submitter_name = 

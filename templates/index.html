@@ -567,8 +567,6 @@ SuspectID,Sharecode,<local/yt>,[submitter]"></textarea>
                 console.log(data);
                 smitter_name = data['name'];
                 smitter_id = data['id'];
-                $.cookie('smitter_name',smitter_name, {expires: cookieExpire});
-                $.cookie('smitter_id',smitter_id, {expires: cookieExpire});
             }
             catch (error) {
                 console.error('Failed to fetch submitter:', error);
