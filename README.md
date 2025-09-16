@@ -4,7 +4,7 @@ This program automates the process of downloading a Counter-Strike 2 demo, analy
 
 This project uses the command-line tools provided by **CS Demo Manager** to handle the demo analysis and launch the game for recording.
 
-### This is a fork with QoL updates, for changes see "What's different?" in the bottom.
+### This is a fork with QoL updates, for changes see "[What's different?](#whats-different)" in the bottom.
 
 ## Features
 
@@ -17,8 +17,7 @@ This project uses the command-line tools provided by **CS Demo Manager** to hand
 * **Persistent Results**: Saves a history of completed jobs in a local `results.json` file.
 
 ## Automatic installation
-1. Use [Moon²s](https://github.com/m0onmo0n/Demo2Video-Installer) fork of Demo2Video-installer
-2. Use my [modder script](https://github.com/OeschMe/Demo2Video-modder) to apply edits found in this fork
+1. Use [Moon²s](https://github.com/m0onmo0n/cswatch_auto) automatic installer.
 3. Done
 
 
