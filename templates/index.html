@@ -234,9 +234,10 @@ SuspectID,Sharecode,<local/yt>,[submitter]"></textarea>
                         const li = document.createElement('li');
                         jobytupload = "Save locally";
                         if( job.youtube_upload ){
-                            jobytupload = "Upload to YouTube"
+                            jobytupload = "Upload to YouTube";
                         }
-                        li.textContent = `Suspect: ...${job.suspect_steam_id.substring(job.suspect_steam_id.length - 10)} (Code: ...-${job.share_code.substring(job.share_code.length - 11)}), ${jobytupload}`;
+                        output_sharecode = job.share_code.replace(".dem.bz2","");
+                        li.textContent = `Suspect: ...${job.suspect_steam_id.substring(job.suspect_steam_id.length - 10)} (Code: ...-${output_sharecode.substring(output_sharecode.length - 11)}), ${jobytupload}`;
                         queueList.appendChild(li);
                     });
                 }
