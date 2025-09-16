@@ -126,10 +126,11 @@ Double-click run.bat (repo root). It:
   * This setting is saved as a cookike
 * Added "Copy YT link" button in the table row and "Show output" dialog
   * Also shows popup with the youtube URL when copy is succesfull
-
-
 * Added jQ cookie lib
-* System has functionality for custom "Submitter name" renaming, but it's not fully implemented yet.
+* Added option to replace "Submitted By" with custom name
+  * config.ini(.template) has two new variables for that
+    * *replace_submitter_id* is your ID when landing from e.g. CSWatch Get Highlights link
+    * *use_submitter_name* is the name that ID will be replaced. Name will also be auto filled to manual input form as well as batch jobs (if not provided)
 
 
 ### style.css
