@@ -1,5 +1,7 @@
 # CS Demo Processor
 
+# ⚠️⚠️⚠️ CS2 update on 17th September broke demo analyzing. This means D2V is currently not working as it should ⚠️⚠️⚠️
+
 This program automates the process of downloading a Counter-Strike 2 demo, analyzing it, recording highlights of a specified player, and uploading the resulting video to YouTube. It runs as a continuous service with a web interface for queuing jobs, making it a complete, hands-free pipeline.
 
 This project uses the command-line tools provided by **CS Demo Manager** to handle the demo analysis and launch the game for recording.
