@@ -1,6 +1,9 @@
 # CS Demo Processor
 
-# ⚠️⚠️⚠️ CS2 update on 17th September broke demo analyzing. This means D2V is currently not working as it should ⚠️⚠️⚠️
+> [!IMPORTANT]
+> We have fix for September 17th update that broke the CSDM analyzer.
+> 
+> Replace your csdm dev branch with [this fixed fork](https://github.com/OeschMe/csdm-fork-sept17fix)
 
 This program automates the process of downloading a Counter-Strike 2 demo, analyzing it, recording highlights of a specified player, and uploading the resulting video to YouTube. It runs as a continuous service with a web interface for queuing jobs, making it a complete, hands-free pipeline.
 
