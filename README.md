@@ -1,2 +1,3 @@
 > [!IMPORTANT]
-> This is for AIO repo
+> This is for the AIO repo
+> https://github.com/m0onmo0n/cswatch_auto
